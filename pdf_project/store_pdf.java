@@ -50,9 +50,9 @@ class DB {
             FileInputStream fis = new FileInputStream(file);
  	    long refNo = genRefNo();	
 	    while(true){
-		query = "select * from CM_PDF_STORE where ";
-            	Statement state = (Statement) conn.createStatement();
-            	ResultSet rs = ((java.sql.Statement) state).executeQuery(query);
+		PreparedStatment ps = connection.prepareStatement("select count(*) from CM_PDF_STORE where CM_REF_NO = ?");
+		ps.setLong(1,refNo);
+		ResultSet rs = ps.executeQuery();
 		if(rs.next() == false){
 			break;
 		}
