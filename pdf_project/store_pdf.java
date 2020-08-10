@@ -42,20 +42,27 @@ class DB {
     }
      
     public void insertPDF(Connection conn,String filename) {
-        int len;
+        int len;    
         String query;
         PreparedStatement pstmt;
         try {
             File file = new File(filename);
             FileInputStream fis = new FileInputStream(file);
-            len = (int)file.length();
+ 	    long refNo = genRefNo();	
+	    while(true){
+		query = "select * from CM_PDF_STORE where ";
+            	Statement state = (Statement) conn.createStatement();
+            	ResultSet rs = ((java.sql.Statement) state).executeQuery(query);
+		if(rs.next() == false){
+			break;
+		}
+	    }
+    
+	    len = (int)file.length();
             query = ("insert into CM_PDF_STORE VALUES(?,?,?)");
             pstmt = conn.prepareStatement(query);
-            //pstmt.setString(1,file.getName());
-            //pstmt.setInt(2, len);
-            pstmt.setLong(1,genRefNo());
+            pstmt.setLong(1,refNo);
             pstmt.setString(2,file.getName());
-            //method to insert a stream of bytes
             pstmt.setBinaryStream(3, fis, len); 
             pstmt.executeUpdate();
         } catch (Exception e) {
